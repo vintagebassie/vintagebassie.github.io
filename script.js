@@ -59,12 +59,14 @@ function openZone(file) {
 
 function aboutBlank() {
     const newWindow = window.open("about:blank", "_blank");
-    let html = zones.find(zone => zone.id === document.getElementById('zoneId').textContent).url.replace("{ASSET_URL}", assetURL);
-    if (newWindow) {
-        newWindow.document.open();
-        newWindow.document.write(html);
-        newWindow.document.close();
-    }
+    let zone = zones.find(zone => zone.id === document.getElementById('zoneId').textContent).url.replace("{ASSET_URL}", assetURL);
+    fetch(zone.url).then(response => response.text()).then(html => {
+        if (newWindow) {
+            newWindow.document.open();
+            newWindow.document.write(html);
+            newWindow.document.close();
+        }
+    })
 }
 
 
