@@ -60,7 +60,7 @@ function openZone(file) {
 function aboutBlank() {
     const newWindow = window.open("about:blank", "_blank");
     let zone = zones.find(zone => zone.id+'' === document.getElementById('zoneId').textContent).url.replace("{ASSET_URL}", assetURL);
-    fetch(zone.url).then(response => response.text()).then(html => {
+    fetch(zone).then(response => response.text()).then(html => {
         if (newWindow) {
             newWindow.document.open();
             newWindow.document.write(html);
