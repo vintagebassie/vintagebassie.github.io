@@ -48,7 +48,7 @@ function filterZones() {
 function openZone(url) {
     fetch(url).then(response => response.text()).then(html => {
         zoneFrame.contentDocument.open();
-        zoneFrame.contentDocument.write(html);
+        zoneFrame.contentDocument.write("// "+url+"\n"+html);
         zoneFrame.contentDocument.close();
         zoneViewer.style.display = "block";
     }).catch(error => alert("Failed to load zone: " + error));
@@ -57,37 +57,17 @@ function openZone(url) {
 function aboutBlank() {
     const newWindow = window.open("about:blank", "_blank");
     if (newWindow) {
-        newWindow.document.open();
-        const htmlContent = `
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <style>
-                    body {
-                        font-family: Arial, sans-serif;
-                        background-color: #f4f4f4;
-                        margin: 0;
-                        padding: 0;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        height: 100vh;
-                    }
-                    iframe {
-                        width: 100%;
-                        height: 100%;
-                        border: none;
-                    }
-                </style>
-            </head>
-            <body>
-                ${zoneFrame.contentDocument.documentElement.outerHTML}
-            </body>
-            </html>
-        `;
-        newWindow.document.write(htmlContent);
-        newWindow.document.close();
+        const commentNode = zoneFrame.contentDocument.childNodes[0];
+        if (commentNode.nodeType === Node.COMMENT_NODE) {
+            const url = commentNode.nodeValue.trim().split(" ")[1];
+            fetch(url).then(response => response.text()).then(html => {
+                newWindow.document.open();
+                newWindow.document.write(html);
+                newWindow.document.close();
+            }).catch(error => alert("Failed to load zone: " + error));
+        } else {
+            alert("No URL found in the comment.");
+        }
     } else {
         alert("Popup blocked! Allow popups and try again.");
     }
