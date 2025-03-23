@@ -2,7 +2,7 @@
   {
     "id": 0,
     "name": "Bowmasters",
-    "cover": "{ASSET_URL}/cover/0.png",
+    "cover": "{ASSET_URL}/0/cover.png",
     "url": "{ASSET_URL}/0/index.html"
   }
 ]
