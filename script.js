@@ -62,10 +62,6 @@ function openZone(file) {
         document.getElementById('zoneName').textContent = file.name;
         document.getElementById('zoneId').textContent = file.id;
         zoneViewer.style.display = "block";
-
-        const search = new URLSearchParams();
-        search.set('id', file.id);
-        window.location.search = search.toString();
     }).catch(error => alert("Failed to load zone: " + error));
 }
 
