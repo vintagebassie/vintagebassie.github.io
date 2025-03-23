@@ -8,26 +8,40 @@ h1 {
 }
 
 #container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 10px;
     max-width: 800px;
     margin: 0 auto;
 }
 
-button {
-    padding: 10px 15px;
+.zone-item {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.zone-item img {
+    width: 100%;
+    height: auto;
+}
+
+.zone-item button {
+    width: 100%;
+    padding: 10px;
     border: none;
     background-color: #007bff;
     color: white;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 0 0 5px 5px;
     font-size: 14px;
     transition: background-color 0.2s;
 }
 
-button:hover {
+.zone-item button:hover {
     background-color: #0056b3;
 }
 

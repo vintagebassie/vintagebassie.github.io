@@ -6,14 +6,23 @@ const assetURL = "https://cdn.jsdelivr.net/gh/gn-math/assets@main";
 
 async function listZones() {
     try {
-        const response = await fetch(apiURL);
+        const response = await fetch(zonesURL);
         const json = await response.json();
         container.innerHTML = "";
         json.forEach(file => {
+            const zoneItem = document.createElement("div");
+            zoneItem.className = "zone-item";
+
+            const img = document.createElement("img");
+            img.src = file.cover.replace("{ASSET_URL}", assetURL);
+            zoneItem.appendChild(img);
+
             const button = document.createElement("button");
             button.textContent = file.name;
             button.onclick = () => openZone(file.url.replace("{ASSET_URL}", assetURL));
-            container.appendChild(button);
+            zoneItem.appendChild(button);
+            
+            container.appendChild(zoneItem);
         });
         if (container.innerHTML === "") {
             container.innerHTML = "No zones found.";
