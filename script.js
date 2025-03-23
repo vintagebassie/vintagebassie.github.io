@@ -49,7 +49,7 @@ function openZone(file) {
     const url = file.url.replace("{ASSET_URL}", assetURL);
     fetch(url).then(response => response.text()).then(html => {
         zoneFrame.contentDocument.open();
-        zoneFrame.contentDocument.write("// " + url + "\n" + html);
+        zoneFrame.contentDocument.write(html);
         zoneFrame.contentDocument.close();
         document.getElementById('zoneName').textContent = file.name;
         document.getElementById('zoneId').textContent = file.id;
@@ -59,7 +59,7 @@ function openZone(file) {
 
 function aboutBlank() {
     const newWindow = window.open("about:blank", "_blank");
-    let zone = zones.find(zone => zone.id === document.getElementById('zoneId').textContent).url.replace("{ASSET_URL}", assetURL);
+    let zone = zones.find(zone => zone.id+'' === document.getElementById('zoneId').textContent).url.replace("{ASSET_URL}", assetURL);
     fetch(zone.url).then(response => response.text()).then(html => {
         if (newWindow) {
             newWindow.document.open();
