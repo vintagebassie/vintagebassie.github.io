@@ -5,7 +5,6 @@ const searchBar = document.getElementById('searchBar');
 const zonesURL = "https://cdn.jsdelivr.net/gh/gn-math/gn-math.github.io@main/zones.json";
 const assetURL = "https://cdn.jsdelivr.net/gh/gn-math/assets@main";
 let zones = [];
-
 async function listZones() {
     try {
         const response = await fetch(zonesURL);
@@ -23,11 +22,9 @@ function displayZones(zones) {
         const zoneItem = document.createElement("div");
         zoneItem.className = "zone-item";
         zoneItem.onclick = () => openZone(file.url.replace("{ASSET_URL}", assetURL));
-
         const img = document.createElement("img");
         img.src = file.cover.replace("{ASSET_URL}", assetURL);
         zoneItem.appendChild(img);
-
         const button = document.createElement("button");
         button.textContent = file.name;
         button.onclick = (event) => {
@@ -35,7 +32,6 @@ function displayZones(zones) {
             openZone(file.url.replace("{ASSET_URL}", assetURL));
         };
         zoneItem.appendChild(button);
-
         container.appendChild(zoneItem);
     });
     if (container.innerHTML === "") {
@@ -58,6 +54,17 @@ function openZone(url) {
     }).catch(error => alert("Failed to load zone: " + error));
 }
 
+function aboutBlank() {
+    const newWindow = window.open("about:blank", "_blank");
+    if (newWindow) {
+        newWindow.document.open();
+        newWindow.document.write(zoneFrame.contentDocument.documentElement.outerHTML);
+        newWindow.document.close();
+    } else {
+        alert("Popup blocked! Allow popups and try again.");
+    }
+}
+
 function closeZone() {
     zoneViewer.style.display = "none";
     zoneFrame.src = "about:blank";
@@ -75,3 +82,8 @@ function fullscreenZone() {
     }
 }
 listZones();
+let search = new URLSearchParams(window.location.search);
+if (search.get("id")) {
+    let zone = zones.find(zone => zone.id === search.get("id"));
+    openZone(zone.url.replace("{ASSET_URL}", assetURL));
+}
