@@ -64,7 +64,7 @@ function openZone(file) {
         zoneViewer.style.display = "block";
 
         const search = new URLSearchParams();
-        params.set('id', file.id);
+        search.set('id', file.id);
         window.location.search = search.toString();
     }).catch(error => alert("Failed to load zone: " + error));
 }
