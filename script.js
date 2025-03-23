@@ -58,12 +58,41 @@ function aboutBlank() {
     const newWindow = window.open("about:blank", "_blank");
     if (newWindow) {
         newWindow.document.open();
-        newWindow.document.write(zoneFrame.contentDocument.documentElement.outerHTML);
+        const htmlContent = `
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        background-color: #f4f4f4;
+                        margin: 0;
+                        padding: 0;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        height: 100vh;
+                    }
+                    iframe {
+                        width: 100%;
+                        height: 100%;
+                        border: none;
+                    }
+                </style>
+            </head>
+            <body>
+                ${zoneFrame.contentDocument.documentElement.outerHTML}
+            </body>
+            </html>
+        `;
+        newWindow.document.write(htmlContent);
         newWindow.document.close();
     } else {
         alert("Popup blocked! Allow popups and try again.");
     }
 }
+
 
 function closeZone() {
     zoneViewer.style.display = "none";
