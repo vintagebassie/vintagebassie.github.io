@@ -11,6 +11,14 @@ async function listZones() {
         const json = await response.json();
         zones = json.sort((a, b) => a.name.localeCompare(b.name));
         displayZones(zones);
+        const search = new URLSearchParams(window.location.search);
+        const id = search.get('id');
+        if (id) {
+            const zone = zones.find(zone => zone.id+'' == id+'');
+            if (zone) {
+                openZone(zone);
+            }
+        }
     } catch (error) {
         container.innerHTML = `Error loading zones: ${error}`;
     }
@@ -54,6 +62,10 @@ function openZone(file) {
         document.getElementById('zoneName').textContent = file.name;
         document.getElementById('zoneId').textContent = file.id;
         zoneViewer.style.display = "block";
+
+        const search = new URLSearchParams();
+        params.set('id', file.id);
+        window.location.search = search.toString();
     }).catch(error => alert("Failed to load zone: " + error));
 }
 
@@ -72,6 +84,9 @@ function aboutBlank() {
 function closeZone() {
     zoneViewer.style.display = "none";
     zoneFrame.src = "about:blank";
+
+    const search = new URLSearchParams();
+    window.location.search = search.toString();
 }
 
 function fullscreenZone() {
