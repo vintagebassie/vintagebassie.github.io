@@ -1,35 +1,52 @@
 const container = document.getElementById('container');
 const zoneViewer = document.getElementById('zoneViewer');
 const zoneFrame = document.getElementById('zoneFrame');
+const searchBar = document.getElementById('searchBar');
 const zonesURL = "https://cdn.jsdelivr.net/gh/gn-math/gn-math.github.io@main/zones.json";
 const assetURL = "https://cdn.jsdelivr.net/gh/gn-math/assets@main";
+let zones = [];
 
 async function listZones() {
     try {
         const response = await fetch(zonesURL);
         const json = await response.json();
-        container.innerHTML = "";
-        json.forEach(file => {
-            const zoneItem = document.createElement("div");
-            zoneItem.className = "zone-item";
-
-            const img = document.createElement("img");
-            img.src = file.cover.replace("{ASSET_URL}", assetURL);
-            zoneItem.appendChild(img);
-
-            const button = document.createElement("button");
-            button.textContent = file.name;
-            button.onclick = () => openZone(file.url.replace("{ASSET_URL}", assetURL));
-            zoneItem.appendChild(button);
-            
-            container.appendChild(zoneItem);
-        });
-        if (container.innerHTML === "") {
-            container.innerHTML = "No zones found.";
-        }
+        zones = json.sort((a, b) => a.name.localeCompare(b.name));
+        displayZones(zones);
     } catch (error) {
         container.innerHTML = `Error loading zones: ${error}`;
     }
+}
+
+function displayZones(zones) {
+    container.innerHTML = "";
+    zones.forEach(file => {
+        const zoneItem = document.createElement("div");
+        zoneItem.className = "zone-item";
+        zoneItem.onclick = () => openZone(file.url.replace("{ASSET_URL}", assetURL));
+
+        const img = document.createElement("img");
+        img.src = file.cover.replace("{ASSET_URL}", assetURL);
+        zoneItem.appendChild(img);
+
+        const button = document.createElement("button");
+        button.textContent = file.name;
+        button.onclick = (event) => {
+            event.stopPropagation();
+            openZone(file.url.replace("{ASSET_URL}", assetURL));
+        };
+        zoneItem.appendChild(button);
+
+        container.appendChild(zoneItem);
+    });
+    if (container.innerHTML === "") {
+        container.innerHTML = "No zones found.";
+    }
+}
+
+function filterZones() {
+    const query = searchBar.value.toLowerCase();
+    const filteredZones = zones.filter(zone => zone.name.toLowerCase().includes(query));
+    displayZones(filteredZones);
 }
 
 function openZone(url) {
