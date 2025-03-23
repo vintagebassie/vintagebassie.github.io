@@ -37,8 +37,9 @@ h1 {
 }
 
 .zone-item img {
-    width: 100%;
-    height: auto;
+    width: 512px;
+    height: 512px;
+    object-fit: cover;
 }
 
 .zone-item button {
@@ -78,10 +79,16 @@ h1 {
 }
 
 #zoneInfo {
-    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 5px;
     background: #ddd;
     font-size: 16px;
+}
+
+#zoneTitle {
+    text-align: left;
 }
 
 #zoneId {
@@ -90,8 +97,6 @@ h1 {
 
 #controls {
     text-align: right;
-    padding: 5px;
-    background: #ddd;
 }
 
 #controls button {

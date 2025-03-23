@@ -69,7 +69,6 @@ function aboutBlank() {
     })
 }
 
-
 function closeZone() {
     zoneViewer.style.display = "none";
     zoneFrame.src = "about:blank";
