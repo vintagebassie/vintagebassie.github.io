@@ -77,6 +77,17 @@ h1 {
     border: none;
 }
 
+#zoneInfo {
+    text-align: left;
+    padding: 5px;
+    background: #ddd;
+    font-size: 16px;
+}
+
+#zoneId {
+    color: #9c9c9c;
+}
+
 #controls {
     text-align: right;
     padding: 5px;

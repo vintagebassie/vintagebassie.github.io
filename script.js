@@ -21,7 +21,7 @@ function displayZones(zones) {
     zones.forEach(file => {
         const zoneItem = document.createElement("div");
         zoneItem.className = "zone-item";
-        zoneItem.onclick = () => openZone(file.url.replace("{ASSET_URL}", assetURL));
+        zoneItem.onclick = () => openZone(file);
         const img = document.createElement("img");
         img.src = file.cover.replace("{ASSET_URL}", assetURL);
         zoneItem.appendChild(img);
@@ -29,7 +29,7 @@ function displayZones(zones) {
         button.textContent = file.name;
         button.onclick = (event) => {
             event.stopPropagation();
-            openZone(file.url.replace("{ASSET_URL}", assetURL));
+            openZone(file);
         };
         zoneItem.appendChild(button);
         container.appendChild(zoneItem);
@@ -45,31 +45,25 @@ function filterZones() {
     displayZones(filteredZones);
 }
 
-function openZone(url) {
+function openZone(file) {
+    const url = file.url.replace("{ASSET_URL}", assetURL);
     fetch(url).then(response => response.text()).then(html => {
         zoneFrame.contentDocument.open();
-        zoneFrame.contentDocument.write("// "+url+"\n"+html);
+        zoneFrame.contentDocument.write("// " + url + "\n" + html);
         zoneFrame.contentDocument.close();
+        document.getElementById('zoneName').textContent = file.name;
+        document.getElementById('zoneId').textContent = file.id;
         zoneViewer.style.display = "block";
     }).catch(error => alert("Failed to load zone: " + error));
 }
 
 function aboutBlank() {
     const newWindow = window.open("about:blank", "_blank");
+    let html = zones.find(zone => zone.id === document.getElementById('zoneId').textContent).url.replace("{ASSET_URL}", assetURL);
     if (newWindow) {
-        const commentNode = zoneFrame.contentDocument.childNodes[0];
-        if (commentNode.nodeType === Node.COMMENT_NODE) {
-            const url = commentNode.nodeValue.trim().split(" ")[1];
-            fetch(url).then(response => response.text()).then(html => {
-                newWindow.document.open();
-                newWindow.document.write(html);
-                newWindow.document.close();
-            }).catch(error => alert("Failed to load zone: " + error));
-        } else {
-            alert("No URL found in the comment.");
-        }
-    } else {
-        alert("Popup blocked! Allow popups and try again.");
+        newWindow.document.open();
+        newWindow.document.write(html);
+        newWindow.document.close();
     }
 }
 
@@ -91,8 +85,3 @@ function fullscreenZone() {
     }
 }
 listZones();
-let search = new URLSearchParams(window.location.search);
-if (search.get("id")) {
-    let zone = zones.find(zone => zone.id === search.get("id"));
-    openZone(zone.url.replace("{ASSET_URL}", assetURL));
-}
