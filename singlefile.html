@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gn-math</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        #searchBar {
+            display: block;
+            margin: 20px auto;
+            padding: 10px;
+            width: 80%;
+            max-width: 800px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        #container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .zone-item {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .zone-item img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+
+        .zone-item button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            border-radius: 0 0 5px 5px;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .zone-item button:hover {
+            background-color: #0056b3;
+        }
+
+        #zoneViewer {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 80%;
+            background: white;
+            border: 2px solid #000;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        #zoneViewer iframe {
+            width: 100%;
+            height: 90%;
+            border: none;
+        }
+
+        #zoneInfo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px;
+            background: #ddd;
+            font-size: 16px;
+        }
+
+        #zoneTitle {
+            text-align: left;
+        }
+
+        #zoneId {
+            color: #9c9c9c;
+        }
+
+        #controls {
+            text-align: right;
+        }
+
+        #controls button {
+            padding: 5px 10px;
+            margin: 0 5px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        #controls button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>gn-math</h1>
+    <input type="text" id="searchBar" placeholder="Search zones..." onkeyup="filterZones()">
+    <div id="container">Loading...</div>
+    <div id="zoneViewer">
+        <div id="zoneInfo">
+            <div id="zoneTitle">
+                <span id="zoneName"></span> <span id="zoneId"></span>
+            </div>
+            <div id="controls">
+                <button onclick="closeZone()">Close</button>
+                <button onclick="fullscreenZone()">Fullscreen</button>
+                <button onclick="aboutBlank()">about:blank (use if embed is broken)</button>
+            </div>
+        </div>
+        <iframe id="zoneFrame"></iframe>
+    </div>
+    <script>
+        const container = document.getElementById('container');
+        const zoneViewer = document.getElementById('zoneViewer');
+        const zoneFrame = document.getElementById('zoneFrame');
+        const searchBar = document.getElementById('searchBar');
+        const zonesURL = "https://cdn.jsdelivr.net/gh/gn-math/assets@main/zones.json";
+        const assetURL = "https://cdn.jsdelivr.net/gh/gn-math/assets@main";
+        let zones = [];
+        async function listZones() {
+            try {
+                const response = await fetch(zonesURL);
+                const json = await response.json();
+                zones = json.sort((a, b) => a.name.localeCompare(b.name));
+                displayZones(zones);
+                const search = new URLSearchParams(window.location.search);
+                const id = search.get('id');
+                if (id) {
+                    const zone = zones.find(zone => zone.id + '' == id + '');
+                    if (zone) {
+                        openZone(zone);
+                    }
+                }
+            } catch (error) {
+                container.innerHTML = `Error loading zones: ${error}`;
+            }
+        }
+
+        function displayZones(zones) {
+            container.innerHTML = "";
+            zones.forEach(file => {
+                const zoneItem = document.createElement("div");
+                zoneItem.className = "zone-item";
+                zoneItem.onclick = () => openZone(file);
+                const img = document.createElement("img");
+                img.src = file.cover.replace("{ASSET_URL}", assetURL);
+                zoneItem.appendChild(img);
+                const button = document.createElement("button");
+                button.textContent = file.name;
+                button.onclick = (event) => {
+                    event.stopPropagation();
+                    openZone(file);
+                };
+                zoneItem.appendChild(button);
+                container.appendChild(zoneItem);
+            });
+            if (container.innerHTML === "") {
+                container.innerHTML = "No zones found.";
+            }
+        }
+
+        function filterZones() {
+            const query = searchBar.value.toLowerCase();
+            const filteredZones = zones.filter(zone => zone.name.toLowerCase().includes(query));
+            displayZones(filteredZones);
+        }
+
+        function openZone(file) {
+            const url = file.url.replace("{ASSET_URL}", assetURL);
+            fetch(url).then(response => response.text()).then(html => {
+                zoneFrame.contentDocument.open();
+                zoneFrame.contentDocument.write(html);
+                zoneFrame.contentDocument.close();
+                document.getElementById('zoneName').textContent = file.name;
+                document.getElementById('zoneId').textContent = file.id;
+                zoneViewer.style.display = "block";
+            }).catch(error => alert("Failed to load zone: " + error));
+        }
+
+        function aboutBlank() {
+            const newWindow = window.open("about:blank", "_blank");
+            let zone = zones.find(zone => zone.id + '' === document.getElementById('zoneId').textContent).url.replace("{ASSET_URL}", assetURL);
+            fetch(zone).then(response => response.text()).then(html => {
+                if (newWindow) {
+                    newWindow.document.open();
+                    newWindow.document.write(html);
+                    newWindow.document.close();
+                }
+            })
+        }
+
+        function closeZone() {
+            zoneViewer.style.display = "none";
+            zoneFrame.src = "about:blank";
+            const search = new URLSearchParams();
+            window.location.search = search.toString();
+        }
+
+        function fullscreenZone() {
+            if (zoneFrame.requestFullscreen) {
+                zoneFrame.requestFullscreen();
+            } else if (zoneFrame.mozRequestFullScreen) {
+                zoneFrame.mozRequestFullScreen();
+            } else if (zoneFrame.webkitRequestFullscreen) {
+                zoneFrame.webkitRequestFullscreen();
+            } else if (zoneFrame.msRequestFullscreen) {
+                zoneFrame.msRequestFullscreen();
+            }
+        }
+        listZones();
+    </script>
+</body>
+
+</html>
