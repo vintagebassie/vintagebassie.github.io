@@ -16,9 +16,9 @@
                 const xhr = new ogxhr();
                 const ogopen = xhr.open;
                 xhr.open = function (method, url, ...rest) {
-					const url2 = new URL(url, window.location.origin);
-					url2.searchParams.append('t', Date.now());
-					return ogopen.apply(xhr, [method, url2.toString(), ...rest]);
+                    const url2 = new URL(url, window.location.origin);
+                    url2.searchParams.append('t', Date.now());
+                    return ogopen.apply(xhr, [method, url2.toString(), ...rest]);
                 };
                 return xhr;
             };
