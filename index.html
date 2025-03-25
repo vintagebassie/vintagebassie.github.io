@@ -1,11 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+    <script>
+        (function() {
+            const ogfetch = window.fetch;
+            const ogxhr = window.XMLHttpRequest;
+            window.fetch = async(...args) => {
+                const url = new URL(args[0]);
+                url.searchParams.append('timestamp', Date.now());
+                args[0] = url.toString();
+                return await ogfetch(...args);
+            };
+            window.XMLHttpRequest = function() {
+                const xhr = new ogxhr();
+                const ogopen = xhr.open;
+                xhr.open = function (method, url, ...rest) {
+                    const urlObj = new URL(url, window.location.origin);
+                    url.searchParams.append('timestamp', Date.now());
+                    return ogopen.apply(xhr, [method, url.toString(), ...rest]);
+                };
+                return xhr;
+            };
+        })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>gn-math</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <h1>gn-math</h1>
     <input type="text" id="searchBar" placeholder="Search zones..." onkeyup="filterZones()">
@@ -25,4 +49,5 @@
     </div>
     <script src="script.js"></script>
 </body>
+
 </html>
