@@ -8,7 +8,7 @@
             const ogxhr = window.XMLHttpRequest;
             window.fetch = async(...args) => {
                 const url = new URL(args[0]);
-                url.searchParams.append('timestamp', Date.now());
+                url.searchParams.append('t', Date.now());
                 args[0] = url.toString();
                 return await ogfetch(...args);
             };
@@ -17,7 +17,7 @@
                 const ogopen = xhr.open;
                 xhr.open = function (method, url, ...rest) {
                     const urlObj = new URL(url, window.location.origin);
-                    url.searchParams.append('timestamp', Date.now());
+                    url.searchParams.append('t', Date.now());
                     return ogopen.apply(xhr, [method, url.toString(), ...rest]);
                 };
                 return xhr;
