@@ -80,9 +80,6 @@ function aboutBlank() {
 function closeZone() {
     zoneViewer.style.display = "none";
     zoneFrame.src = "about:blank";
-
-    const search = new URLSearchParams();
-    window.location.search = search.toString();
 }
 
 function fullscreenZone() {
