@@ -1,43 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script>
-        (function () {
-            const ogfetch = window.fetch;
-            const ogxhr = window.XMLHttpRequest;
-            window.fetch = async (...args) => {
-                const url = new URL(args[0]);
-                url.searchParams.append('t', Date.now());
-                args[0] = url.toString();
-                return await ogfetch(...args);
-            };
-            window.XMLHttpRequest = function () {
-                const xhr = new ogxhr();
-                const ogopen = xhr.open;
-                xhr.open = function (method, url, ...rest) {
-                    const url2 = new URL(url, window.location.origin);
-                    url2.searchParams.append('t', Date.now());
-                    return ogopen.apply(xhr, [method, url2.toString(), ...rest]);
-                };
-                return xhr;
-            };
-            const observer = new MutationObserver((mutations) => {
-                mutations.forEach((mutation) => {
-                    mutation.addedNodes.forEach((node) => {
-                        if (node.tagName === 'SCRIPT' && node.src) {
-                            const url = new URL(node.src, window.location.origin);
-                            url.searchParams.append('t', Date.now());
-                            node.src = url.toString();
-                        }
-                    });
-                });
-            });
-            observer.observe(document.documentElement, {
-                childList: true,
-                subtree: true
-            });
-        })();
-    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>gn-math</title>
