@@ -7,7 +7,7 @@ const assetURL = "https://cdn.jsdelivr.net/gh/gn-math/assets@main";
 let zones = [];
 async function listZones() {
     try {
-        const response = await fetch(zonesURL);
+        const response = await fetch(zonesURL+"?t="+new Date());
         const json = await response.json();
         zones = json.sort((a, b) => a.name.localeCompare(b.name));
         displayZones(zones);
