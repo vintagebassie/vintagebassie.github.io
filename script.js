@@ -2,8 +2,8 @@ const container = document.getElementById('container');
 const zoneViewer = document.getElementById('zoneViewer');
 const zoneFrame = document.getElementById('zoneFrame');
 const searchBar = document.getElementById('searchBar');
-const zonesURL = "https://cdn.jsdelivr.net/gh/gn-math/assets@main/zones.json";
-const assetURL = "https://cdn.jsdelivr.net/gh/gn-math/assets@main";
+const zonesURL = "https://cdn.statically.io/gh/gn-math/assets/main/zones.json";
+const assetURL = "https://cdn.statically.io/gh/gn-math/assets/main";
 let zones = [];
 async function listZones() {
     try {
