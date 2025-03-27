@@ -114,3 +114,60 @@ h1 {
 #controls button:hover {
     background-color: #0056b3;
 }
+
+#dataButtons {
+    display: flex;
+    justify-content: center;
+    margin: 10px auto;
+    gap: 10px;
+    width: 80%;
+    max-width: 800px;
+}
+
+#dataButtons button {
+    padding: 10px 15px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+#dataButtons button:hover {
+    background-color: #367C39;
+}
+
+#dataButtons input[type="file"] {
+    display: inline-block;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #f9f9f9;
+}
+
+#sortOptions {
+    display: block;
+    margin: 10px auto;
+    padding: 10px;
+    width: 80%;
+    max-width: 800px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    appearance: none;
+    background-color: white;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23343a40" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right .75rem center;
+    background-size: 8px 10px;
+}
+
+#sortOptions:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
+}
