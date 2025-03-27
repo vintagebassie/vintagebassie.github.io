@@ -4,13 +4,13 @@ const zoneFrame = document.getElementById('zoneFrame');
 const searchBar = document.getElementById('searchBar');
 const sortOptions = document.getElementById('sortOptions');
 const zonesURL = "https://cdn.statically.io/gh/gn-math/assets/main/zones.json";
-const coverURL = "https://cdn.statically.io/gh/gn-math/covers/main"
+const coverURL = "https://cdn.statically.io/gh/gn-math/covers/main";
 const htmlURL = "https://cdn.jsdelivr.net/gh/gn-math/html@main";
 let zones = [];
 let popularityData = {};
 async function listZones() {
     try {
-        const response = await fetch(zonesURL+"?t="+new Date());
+        const response = await fetch(zonesURL + "?t=" + new Date());
         const json = await response.json();
         zones = json;
         await fetchPopularity();
@@ -18,7 +18,7 @@ async function listZones() {
         const search = new URLSearchParams(window.location.search);
         const id = search.get('id');
         if (id) {
-            const zone = zones.find(zone => zone.id+'' == id+'');
+            const zone = zones.find(zone => zone.id + '' == id + '');
             if (zone) {
                 openZone(zone);
             }
@@ -27,7 +27,6 @@ async function listZones() {
         container.innerHTML = `Error loading zones: ${error}`;
     }
 }
-
 async function fetchPopularity() {
     try {
         const response = await fetch("https://data.jsdelivr.com/v1/stats/packages/gh/gn-math/html@main/files?period=year");
@@ -53,7 +52,7 @@ function sortZones() {
     } else if (sortBy === 'popular') {
         zones.sort((a, b) => (popularityData[b.id] || 0) - (popularityData[a.id] || 0));
     }
-    zones.sort((a, b) => (a.id === -1 ? -1 : b.id === -1 ? 1 : 0));    
+    zones.sort((a, b) => (a.id === -1 ? -1 : b.id === -1 ? 1 : 0));
     displayZones(zones);
 }
 
@@ -100,7 +99,7 @@ function openZone(file) {
 
 function aboutBlank() {
     const newWindow = window.open("about:blank", "_blank");
-    let zone = zones.find(zone => zone.id+'' === document.getElementById('zoneId').textContent).url.replace("{COVER_URL}", coverURL).replace("{HTML_URL}", htmlURL);
+    let zone = zones.find(zone => zone.id + '' === document.getElementById('zoneId').textContent).url.replace("{COVER_URL}", coverURL).replace("{HTML_URL}", htmlURL);
     fetch(zone).then(response => response.text()).then(html => {
         if (newWindow) {
             newWindow.document.open();
@@ -128,9 +127,11 @@ function fullscreenZone() {
 }
 
 function saveData() {
-    let data = JSON.stringify(localStorage)+"\n\n|\n\n"+document.cookie;
+    let data = JSON.stringify(localStorage) + "\n\n|\n\n" + document.cookie;
     const link = document.createElement("a");
-    link.href = URL.createObjectURL(new Blob([data], { type: "text/plain" }));
+    link.href = URL.createObjectURL(new Blob([data], {
+        type: "text/plain"
+    }));
     link.download = `${Date.now()}.data`;
     document.body.appendChild(link);
     link.click();
@@ -141,7 +142,7 @@ function loadData(event) {
     const file = event.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = function (e) {
         const content = e.target.result;
         const [localStorageData, cookieData] = content.split("\n\n|\n\n");
         try {
