@@ -11,15 +11,18 @@
 <body>
     <h1>gn-math</h1>
     <input type="text" id="searchBar" placeholder="Search zones..." onkeyup="filterZones()">
-    <div id="dataButtons">
-        <button onclick="saveData()">Save Data</button>
-        <input type="file" onchange="loadData(event)">Load Data</input>
+    <div id="topControls">
+        <div id="dataButtons">
+            <button onclick="saveData()">Save Data</button>
+            <button onclick="document.getElementById('file').click()">Load Data</button>
+            <input type="file" id="file" style="display:none" onchange="loadData(event)"/>
+        </div>
+        <select id="sortOptions" onchange="sortZones()">
+            <option value="name">by Name</option>
+            <option value="id">by Id</option>
+            <option value="popular">by Popular</option>
+        </select>
     </div>
-    <select id="sortOptions" onchange="sortZones()">
-        <option value="name">by Name</option>
-        <option value="id">by Id</option>
-        <option value="popular">by Popularity</option>
-    </select>
     <div id="container">Loading...</div>
     <div id="zoneViewer">
         <div id="zoneInfo">
