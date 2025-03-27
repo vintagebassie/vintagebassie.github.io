@@ -2,16 +2,19 @@ const container = document.getElementById('container');
 const zoneViewer = document.getElementById('zoneViewer');
 const zoneFrame = document.getElementById('zoneFrame');
 const searchBar = document.getElementById('searchBar');
+const sortOptions = document.getElementById('sortOptions');
 const zonesURL = "https://cdn.statically.io/gh/gn-math/assets/main/zones.json";
 const coverURL = "https://cdn.statically.io/gh/gn-math/covers/main"
 const htmlURL = "https://cdn.jsdelivr.net/gh/gn-math/html@main";
 let zones = [];
+let popularityData = {};
 async function listZones() {
     try {
         const response = await fetch(zonesURL+"?t="+new Date());
         const json = await response.json();
-        zones = json.sort((a, b) => a.name.localeCompare(b.name));
-        displayZones(zones);
+        zones = json;
+        await fetchPopularity();
+        sortZones();
         const search = new URLSearchParams(window.location.search);
         const id = search.get('id');
         if (id) {
@@ -23,6 +26,35 @@ async function listZones() {
     } catch (error) {
         container.innerHTML = `Error loading zones: ${error}`;
     }
+}
+
+async function fetchPopularity() {
+    try {
+        const response = await fetch("https://data.jsdelivr.com/v1/stats/packages/gh/gn-math/html@main/files?period=year");
+        const data = await response.json();
+        data.forEach(file => {
+            const idMatch = file.name.match(/\/(\d+)\.html$/);
+            if (idMatch) {
+                const id = parseInt(idMatch[1]);
+                popularityData[id] = file.hits.total;
+            }
+        });
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+function sortZones() {
+    const sortBy = sortOptions.value;
+    if (sortBy === 'name') {
+        zones.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortBy === 'id') {
+        zones.sort((a, b) => a.id - b.id);
+    } else if (sortBy === 'popular') {
+        zones.sort((a, b) => (popularityData[b.id] || 0) - (popularityData[a.id] || 0));
+    }
+    zones.sort((a, b) => (a.id === -1 ? -1 : b.id === -1 ? 1 : 0));    
+    displayZones(zones);
 }
 
 function displayZones(zones) {
@@ -93,5 +125,41 @@ function fullscreenZone() {
     } else if (zoneFrame.msRequestFullscreen) {
         zoneFrame.msRequestFullscreen();
     }
+}
+
+function saveData() {
+    let data = JSON.stringify(localStorage)+"\n\n|\n\n"+document.cookie;
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(new Blob([data], { type: "text/plain" }));
+    link.download = `${Date.now()}.data`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+function loadData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const content = e.target.result;
+        const [localStorageData, cookieData] = content.split("\n\n|\n\n");
+        try {
+            const parsedData = JSON.parse(localStorageData);
+            for (let key in parsedData) {
+                localStorage.setItem(key, parsedData[key]);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+        if (cookieData) {
+            const cookies = cookieData.split("; ");
+            cookies.forEach(cookie => {
+                document.cookie = cookie;
+            });
+        }
+        alert("Data loaded");
+    };
+    reader.readAsText(file);
 }
 listZones();
