@@ -3,7 +3,8 @@ const zoneViewer = document.getElementById('zoneViewer');
 const zoneFrame = document.getElementById('zoneFrame');
 const searchBar = document.getElementById('searchBar');
 const zonesURL = "https://cdn.statically.io/gh/gn-math/assets/main/zones.json";
-const assetURL = "https://cdn.jsdelivr.net/gh/gn-math/assets@main";
+const coverURL = "https://cdn.statically.io/gh/gn-math/covers/main"
+const htmlURL = "https://cdn.jsdelivr.net/gh/gn-math/html@main";
 let zones = [];
 async function listZones() {
     try {
@@ -31,7 +32,7 @@ function displayZones(zones) {
         zoneItem.className = "zone-item";
         zoneItem.onclick = () => openZone(file);
         const img = document.createElement("img");
-        img.src = file.cover.replace("{ASSET_URL}", assetURL);
+        img.src = file.cover.replace("{COVER_URL}", coverURL).replace("{HTML_URL}", htmlURL);
         zoneItem.appendChild(img);
         const button = document.createElement("button");
         button.textContent = file.name;
@@ -54,7 +55,7 @@ function filterZones() {
 }
 
 function openZone(file) {
-    const url = file.url.replace("{ASSET_URL}", assetURL);
+    const url = file.url.replace("{COVER_URL}", coverURL).replace("{HTML_URL}", htmlURL);
     fetch(url).then(response => response.text()).then(html => {
         zoneFrame.contentDocument.open();
         zoneFrame.contentDocument.write(html);
@@ -67,7 +68,7 @@ function openZone(file) {
 
 function aboutBlank() {
     const newWindow = window.open("about:blank", "_blank");
-    let zone = zones.find(zone => zone.id+'' === document.getElementById('zoneId').textContent).url.replace("{ASSET_URL}", assetURL);
+    let zone = zones.find(zone => zone.id+'' === document.getElementById('zoneId').textContent).url.replace("{COVER_URL}", coverURL).replace("{HTML_URL}", htmlURL);
     fetch(zone).then(response => response.text()).then(html => {
         if (newWindow) {
             newWindow.document.open();
