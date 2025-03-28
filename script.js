@@ -86,15 +86,17 @@ function filterZones() {
 }
 
 function openZone(file) {
-    const url = file.url.replace("{COVER_URL}", coverURL).replace("{HTML_URL}", htmlURL);
-    fetch(url).then(response => response.text()).then(html => {
-        zoneFrame.contentDocument.open();
-        zoneFrame.contentDocument.write(html);
-        zoneFrame.contentDocument.close();
-        document.getElementById('zoneName').textContent = file.name;
-        document.getElementById('zoneId').textContent = file.id;
-        zoneViewer.style.display = "block";
-    }).catch(error => alert("Failed to load zone: " + error));
+    !file.url.startsWith("{COVER_URL}") || !file.url.startsWith("{HTML_URL}") ? window.location.href = "file.url" : function() {
+        const url = file.url.replace("{COVER_URL}", coverURL).replace("{HTML_URL}", htmlURL);
+        fetch(url).then(response => response.text()).then(html => {
+            zoneFrame.contentDocument.open();
+            zoneFrame.contentDocument.write(html);
+            zoneFrame.contentDocument.close();
+            document.getElementById('zoneName').textContent = file.name;
+            document.getElementById('zoneId').textContent = file.id;
+            zoneViewer.style.display = "block";
+        }).catch(error => alert("Failed to load zone: " + error));
+    }
 }
 
 function aboutBlank() {
