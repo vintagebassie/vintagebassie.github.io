@@ -86,7 +86,9 @@ function filterZones() {
 }
 
 function openZone(file) {
-    !file.url.startsWith("{COVER_URL}") || !file.url.startsWith("{HTML_URL}") ? window.location.href = file.url : function() {
+    if (!file.url.startsWith("{COVER_URL}") && !file.url.startsWith("{HTML_URL}")) {
+        window.location.href = file.url;
+    } else {
         const url = file.url.replace("{COVER_URL}", coverURL).replace("{HTML_URL}", htmlURL);
         fetch(url).then(response => response.text()).then(html => {
             zoneFrame.contentDocument.open();
