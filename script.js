@@ -86,7 +86,7 @@ function filterZones() {
 }
 
 function openZone(file) {
-    if (!file.url.startsWith("{COVER_URL}") && !file.url.startsWith("{HTML_URL}")) {
+    if (file.url.startsWith("http")) {
         window.location.href = file.url;
     } else {
         const url = file.url.replace("{COVER_URL}", coverURL).replace("{HTML_URL}", htmlURL);
