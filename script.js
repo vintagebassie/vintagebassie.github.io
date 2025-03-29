@@ -10,7 +10,7 @@ let zones = [];
 let popularityData = {};
 async function listZones() {
     try {
-        const hashResponse = await fetch('https://api.github.com/repos/gn-math/gn-math.github.io/commits');
+        const hashResponse = await fetch('https://api.github.com/repos/gn-math/assets/commits');
         const hashData = await hashResponse.json();
         const response = await fetch(zonesURL.replace("{HASH}", hashData[0]['sha']) + "?t=" + new Date());
         const json = await response.json();
