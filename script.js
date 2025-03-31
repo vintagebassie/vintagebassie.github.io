@@ -1,6 +1,6 @@
 const container = document.getElementById('container');
 const zoneViewer = document.getElementById('zoneViewer');
-const zoneFrame = document.getElementById('zoneFrame');
+let zoneFrame = document.getElementById('zoneFrame');
 const searchBar = document.getElementById('searchBar');
 const sortOptions = document.getElementById('sortOptions');
 const zonesURL = "https://cdn.jsdelivr.net/gh/gn-math/assets@{HASH}/zones.json";
@@ -93,6 +93,11 @@ function openZone(file) {
     } else {
         const url = file.url.replace("{COVER_URL}", coverURL).replace("{HTML_URL}", htmlURL);
         fetch(url).then(response => response.text()).then(html => {
+            if (zoneFrame.contentDocument === null) {
+                zoneFrame = document.createElement("iframe");
+                zoneFrame.id = "zoneFrame";
+                zoneViewer.appendChild(zoneFrame);
+            }
             zoneFrame.contentDocument.open();
             zoneFrame.contentDocument.write(html);
             zoneFrame.contentDocument.close();
@@ -117,7 +122,7 @@ function aboutBlank() {
 
 function closeZone() {
     zoneViewer.style.display = "none";
-    zoneFrame.src = "about:blank";
+    zoneViewer.removeChild(zoneFrame);
 }
 
 function fullscreenZone() {
@@ -169,7 +174,6 @@ function loadData(event) {
     };
     reader.readAsText(file);
 }
-
 const darkModeToggle = document.getElementById('darkModeToggle');
 darkModeToggle.addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');

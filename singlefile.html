@@ -292,7 +292,7 @@
     <script>
         const container = document.getElementById('container');
         const zoneViewer = document.getElementById('zoneViewer');
-        const zoneFrame = document.getElementById('zoneFrame');
+        let zoneFrame = document.getElementById('zoneFrame');
         const searchBar = document.getElementById('searchBar');
         const sortOptions = document.getElementById('sortOptions');
         const zonesURL = "https://cdn.jsdelivr.net/gh/gn-math/assets@{HASH}/zones.json";
@@ -385,6 +385,11 @@
             } else {
                 const url = file.url.replace("{COVER_URL}", coverURL).replace("{HTML_URL}", htmlURL);
                 fetch(url).then(response => response.text()).then(html => {
+                    if (zoneFrame.contentDocument === null) {
+                        zoneFrame = document.createElement("iframe");
+                        zoneFrame.id = "zoneFrame";
+                        zoneViewer.appendChild(zoneFrame);
+                    }
                     zoneFrame.contentDocument.open();
                     zoneFrame.contentDocument.write(html);
                     zoneFrame.contentDocument.close();
@@ -409,7 +414,7 @@
 
         function closeZone() {
             zoneViewer.style.display = "none";
-            zoneFrame.src = "about:blank";
+            zoneViewer.removeChild(zoneFrame);
         }
 
         function fullscreenZone() {
