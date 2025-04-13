@@ -3,16 +3,15 @@ const zoneViewer = document.getElementById('zoneViewer');
 let zoneFrame = document.getElementById('zoneFrame');
 const searchBar = document.getElementById('searchBar');
 const sortOptions = document.getElementById('sortOptions');
-const zonesURL = "https://cdn.jsdelivr.net/gh/gn-math/assets@{HASH}/zones.json";
+// https://www.jsdelivr.com/tools/purge
+const zonesURL = "https://cdn.jsdelivr.net/gh/gn-math/assets@main/zones.json";
 const coverURL = "https://cdn.jsdelivr.net/gh/gn-math/covers@main";
 const htmlURL = "https://cdn.jsdelivr.net/gh/gn-math/html@main";
 let zones = [];
 let popularityData = {};
 async function listZones() {
     try {
-        const hashResponse = await fetch('https://api.github.com/repos/gn-math/assets/commits');
-        const hashData = await hashResponse.json();
-        const response = await fetch(zonesURL.replace("{HASH}", hashData[0]['sha']) + "?t=" + new Date());
+        const response = await fetch(zonesURL);
         const json = await response.json();
         zones = json;
         await fetchPopularity();
@@ -41,7 +40,7 @@ async function fetchPopularity() {
             }
         });
     } catch (error) {
-        console.error(error);
+        popularityData[0] = 0;
     }
 }
 
