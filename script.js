@@ -77,6 +77,8 @@ function displayZones(zones) {
     });
     if (container.innerHTML === "") {
         container.innerHTML = "No zones found.";
+    } else {
+        document.getElementById("zoneCount").textContent = `Zones Loaded: ${zones.length}`;
     }
 }
 

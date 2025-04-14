@@ -280,6 +280,7 @@
             <option value="popular">by Popularityㅤ</option>
         </select>
     </div>
+    <div id="zoneCount"></div>
     <div id="container">Loading...</div>
     <div id="zoneViewer">
         <div id="zoneInfo">
@@ -375,6 +376,8 @@
             });
             if (container.innerHTML === "") {
                 container.innerHTML = "No zones found.";
+            } else {
+                document.getElementById("zoneCount").textContent = `Zones Loaded: ${zones.length}`;
             }
         }
 
